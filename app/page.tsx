@@ -168,12 +168,19 @@ export default function Home() {
             <NavLink href="#calculator">Calculator</NavLink>
             <NavLink href="/journal">Blog</NavLink>
             <NavLink href="/about">About</NavLink>
-            <Link href="/contact" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
-              Get Started
+            <NavLink href="/contact">Contact Us</NavLink>
+            <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
+              Book Session
             </Link>
           </div>
 
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-black focus:outline-none"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            title={isMenuOpen ? "Close menu" : "Open menu"}
+          >
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -195,7 +202,8 @@ export default function Home() {
               <Link href="#calculator" onClick={() => setIsMenuOpen(false)}>Calculator</Link>
               <Link href="/journal" onClick={() => setIsMenuOpen(false)}>Blog</Link>
               <Link href="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Contact</Link>
+              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Book Session</Link>
             </div>
           </motion.div>
         )}
@@ -272,7 +280,7 @@ export default function Home() {
               initial={{ x: 50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 1 }}
-              className="absolute top-1/4 -right-8 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 z-20"
+              className="absolute top-8 right-8 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-white/50 z-20"
             >
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-green-100 text-green-600 rounded-lg">
@@ -369,8 +377,8 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className="w-full border-2 border-white/20 text-white py-4 rounded-2xl font-black text-center hover:bg-white hover:text-black transition-all">
-                Enquire Now
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="w-full border-2 border-white/20 text-white py-4 rounded-2xl font-black text-center hover:bg-white hover:text-black transition-all">
+                Book Session
               </Link>
             </motion.div>
 
@@ -453,8 +461,8 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className="w-full border-2 border-white/20 text-white py-4 rounded-2xl font-black text-center hover:bg-white hover:text-black transition-all">
-                Get Started
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="w-full border-2 border-white/20 text-white py-4 rounded-2xl font-black text-center hover:bg-white hover:text-black transition-all">
+                Book Session
               </Link>
             </motion.div>
 
@@ -484,8 +492,8 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className="w-full bg-black text-white py-4 rounded-2xl font-black text-center hover:bg-gray-800 transition-all">
-                Get Platinum
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="w-full bg-black text-white py-4 rounded-2xl font-black text-center hover:bg-gray-800 transition-all">
+                Book Session
               </Link>
             </motion.div>
 
@@ -551,8 +559,8 @@ export default function Home() {
                   ))}
                 </ul>
 
-                <Link href="/contact" className="w-full bg-white text-black py-5 rounded-2xl font-black text-center hover:bg-teal-500 hover:text-white transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-teal-500/40 transform group-hover:scale-[1.02]">
-                  Apply for VIP Elite
+                <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="w-full bg-white text-black py-5 rounded-2xl font-black text-center hover:bg-teal-500 hover:text-white transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-teal-500/40 transform group-hover:scale-[1.02]">
+                  Book Session
                 </Link>
               </div>
             </motion.div>
@@ -791,7 +799,7 @@ export default function Home() {
             {[
               { title: "Navigation", links: ["Home", "Services", "Programs", "Calculator", "Journal"] },
               { title: "Support", links: ["About Us", "Contact", "FAQs", "Privacy Policy"] },
-              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 800 000 0000"] },
+              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 806 615 1793"] },
             ].map((col, i) => (
               <div key={i}>
                 <h4 className="font-black uppercase tracking-widest text-xs mb-8 text-teal-400">{col.title}</h4>
@@ -835,12 +843,15 @@ export default function Home() {
         </motion.a>
 
         <motion.button
+          type="button"
           onClick={() => document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' })}
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
           whileHover={{ scale: 1.1 }}
           className="w-12 h-12 md:w-14 md:h-14 bg-teal-600 text-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl hover:bg-teal-500 transition-all active:scale-95 group"
+          aria-label="Scroll to Investment Calculator"
+          title="Investment Calculator"
         >
           <Calculator size={20} className="md:w-6 md:h-6" />
           <span className="hidden md:block absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -849,11 +860,14 @@ export default function Home() {
         </motion.button>
 
         <motion.button
+          type="button"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="w-12 h-12 md:w-14 md:h-14 bg-black text-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl hover:bg-gray-800 transition-all active:scale-95 group"
+          aria-label="Back to Top"
+          title="Back to Top"
         >
           <ArrowRight size={20} className="md:w-6 md:h-6 -rotate-90" />
           <span className="hidden md:block absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">

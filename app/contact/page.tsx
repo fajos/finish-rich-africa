@@ -115,12 +115,19 @@ export default function ContactPage() {
             <NavLink href="/#calculator">Calculator</NavLink>
             <NavLink href="/journal">Journal</NavLink>
             <NavLink href="/about">About</NavLink>
-            <Link href="/contact" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
-              Get Started
+            <NavLink href="/contact">Contact</NavLink>
+            <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
+              Book Session
             </Link>
           </div>
 
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-black focus:outline-none"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            title={isMenuOpen ? "Close menu" : "Open menu"}
+          >
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -142,7 +149,8 @@ export default function ContactPage() {
               <Link href="/#calculator" onClick={() => setIsMenuOpen(false)}>Calculator</Link>
               <Link href="/journal" onClick={() => setIsMenuOpen(false)}>Journal</Link>
               <Link href="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Contact</Link>
+              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Book Session</Link>
             </div>
           </motion.div>
         )}
@@ -162,7 +170,7 @@ export default function ContactPage() {
                 </div>
                 <h1 className="text-6xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.9]">
                   Let's start your <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600">wealth journey.</span>
+                  <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-600 to-emerald-600">wealth journey.</span>
                 </h1>
                 <p className="text-xl text-gray-600 mb-12 font-medium">
                   Whether you're looking for advisory, corporate training, or just have a question, we're here to help.
@@ -185,7 +193,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="font-black uppercase tracking-widest text-[10px] text-gray-400 mb-1">Email Us</p>
-                      <p className="text-xl font-black">hello@finishrich.africa</p>
+                      <p className="text-xl font-black">temilolaoyewale.c@gmail.com</p>
                     </div>
                   </div>
 
@@ -295,7 +303,7 @@ export default function ContactPage() {
                       onChange={handleChange} 
                       required
                       rows={6}
-                      className="w-full px-8 py-6 rounded-[2rem] bg-gray-50 border-2 border-gray-100 focus:border-teal-500 focus:bg-white focus:outline-none transition-all font-bold resize-none"
+                      className="w-full px-8 py-6 rounded-4xl bg-gray-50 border-2 border-gray-100 focus:border-teal-500 focus:bg-white focus:outline-none transition-all font-bold resize-none"
                       placeholder="How can we help you achieve your goals?"
                     ></textarea>
                   </div>
@@ -303,7 +311,7 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-black text-white py-6 rounded-[2rem] font-black text-lg flex items-center justify-center gap-4 hover:bg-teal-600 transition-all hover:scale-[1.02] active:scale-95 disabled:bg-gray-400 shadow-xl shadow-black/10"
+                    className="w-full bg-black text-white py-6 rounded-4xl font-black text-lg flex items-center justify-center gap-4 hover:bg-teal-600 transition-all hover:scale-[1.02] active:scale-95 disabled:bg-gray-400 shadow-xl shadow-black/10"
                   >
                     {isSubmitting ? "Sending..." : "Send Message"}
                     {!isSubmitting && <ArrowRight size={20} />}
@@ -409,7 +417,7 @@ export default function ContactPage() {
             {[
               { title: "Navigation", links: ["Home", "Services", "Programs", "Calculator", "Journal"] },
               { title: "Support", links: ["About Us", "Contact", "FAQs", "Privacy Policy"] },
-              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 800 000 0000"] },
+              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 806 615 1793"] },
             ].map((col, i) => (
               <div key={i}>
                 <h4 className="font-black uppercase tracking-widest text-xs mb-8 text-teal-400">{col.title}</h4>

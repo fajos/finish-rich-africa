@@ -107,12 +107,39 @@ export default function JournalPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [bookmarkedIds, setBookmarkedIds] = useState<number[]>([]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleShare = (post: typeof journalPosts[0]) => {
+    const url = `${window.location.origin}/journal/${post.id}`;
+    if (navigator.share) {
+      navigator.share({
+        title: post.title,
+        text: post.excerpt,
+        url: url,
+      }).catch(() => {
+        copyToClipboard(url);
+      });
+    } else {
+      copyToClipboard(url);
+    }
+  };
+
+  const copyToClipboard = (url: string) => {
+    navigator.clipboard.writeText(url);
+    alert("Article link copied to clipboard!");
+  };
+
+  const toggleBookmark = (id: number) => {
+    setBookmarkedIds(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
 
   const filteredPosts = journalPosts.filter(post =>
     post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -141,12 +168,19 @@ export default function JournalPage() {
             <NavLink href="/#calculator">Calculator</NavLink>
             <NavLink href="/journal">Journal</NavLink>
             <NavLink href="/about">About</NavLink>
-            <Link href="/contact" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
-              Get Started
+            <NavLink href="/contact">Contact</NavLink>
+            <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
+              Book Session
             </Link>
           </div>
 
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-black focus:outline-none"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            title={isMenuOpen ? "Close menu" : "Open menu"}
+          >
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -168,7 +202,8 @@ export default function JournalPage() {
               <Link href="/#calculator" onClick={() => setIsMenuOpen(false)}>Calculator</Link>
               <Link href="/journal" onClick={() => setIsMenuOpen(false)}>Journal</Link>
               <Link href="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Contact</Link>
+              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Book Session</Link>
             </div>
           </motion.div>
         )}
@@ -215,10 +250,10 @@ export default function JournalPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mb-24 group"
+              className="mb-24 group relative"
             >
-              <Link href={`/journal/${journalPosts[0].id}`} className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="relative aspect-16/10 lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
+              <div className="grid lg:grid-cols-2 gap-12 items-center">
+                <Link href={`/journal/${journalPosts[0].id}`} className="relative aspect-16/10 lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
                   <img
                     src={journalPosts[0].image}
                     alt={journalPosts[0].title}
@@ -227,28 +262,58 @@ export default function JournalPage() {
                   <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">
                     Featured Article
                   </div>
-                </div>
+                </Link>
                 <div>
-                  <div className="flex items-center gap-4 mb-6">
-                    <span className="text-teal-600 font-black text-sm uppercase tracking-widest">{journalPosts[0].category}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
-                    <span className="text-gray-500 font-bold text-sm">{journalPosts[0].readTime}</span>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <span className="text-teal-600 font-black text-sm uppercase tracking-widest">{journalPosts[0].category}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+                      <span className="text-gray-500 font-bold text-sm">{journalPosts[0].readTime}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleShare(journalPosts[0])}
+                        aria-label="Share article"
+                        title="Share article"
+                        className="p-2.5 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                      >
+                        <Share2 size={18} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => toggleBookmark(journalPosts[0].id)}
+                        aria-label={bookmarkedIds.includes(journalPosts[0].id) ? "Remove bookmark" : "Bookmark article"}
+                        title={bookmarkedIds.includes(journalPosts[0].id) ? "Remove bookmark" : "Bookmark article"}
+                        className={`p-2.5 rounded-full bg-gray-50 transition-all ${bookmarkedIds.includes(journalPosts[0].id) ? "text-teal-600 bg-teal-50" : "text-gray-400 hover:text-teal-600 hover:bg-teal-50"}`}
+                      >
+                        <Bookmark size={18} fill={bookmarkedIds.includes(journalPosts[0].id) ? "currentColor" : "none"} />
+                      </button>
+                    </div>
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight group-hover:text-teal-600 transition-colors">
-                    {journalPosts[0].title}
-                  </h2>
+                  <Link href={`/journal/${journalPosts[0].id}`}>
+                    <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight group-hover:text-teal-600 transition-colors">
+                      {journalPosts[0].title}
+                    </h2>
+                  </Link>
                   <p className="text-xl text-gray-600 mb-10 leading-relaxed">
                     {journalPosts[0].excerpt}
                   </p>
-                  <div className="flex items-center gap-4">
-                    <img src="/temmy.jpg" className="w-12 h-12 rounded-full object-cover" alt="Author" />
-                    <div>
-                      <p className="font-black text-sm">{journalPosts[0].author}</p>
-                      <p className="text-xs font-bold text-gray-500">{journalPosts[0].date}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <img src="/temmy.jpg" className="w-12 h-12 rounded-full object-cover" alt="Author" />
+                      <div>
+                        <p className="font-black text-sm">{journalPosts[0].author}</p>
+                        <p className="text-xs font-bold text-gray-500">{journalPosts[0].date}</p>
+                      </div>
                     </div>
+                    <Link href={`/journal/${journalPosts[0].id}`} className="flex items-center gap-2 font-black text-sm group/btn">
+                      Read More
+                      <ArrowRight size={18} className="transition-transform group-hover/btn:translate-x-1" />
+                    </Link>
                   </div>
                 </div>
-              </Link>
+              </div>
             </motion.div>
           )}
 
@@ -261,38 +326,62 @@ export default function JournalPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group"
+                className="group relative"
               >
-                <Link href={`/journal/${post.id}`}>
-                  <div className="relative aspect-4/3 rounded-[2.5rem] overflow-hidden mb-8 shadow-sm">
+                <div className="relative aspect-4/3 rounded-[2.5rem] overflow-hidden mb-8 shadow-sm">
+                  <Link href={`/journal/${post.id}`}>
                     <img
                       src={post.image}
                       alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </Link>
+                  <div className="absolute top-6 right-6 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                    <button
+                      type="button"
+                      onClick={() => handleShare(post)}
+                      aria-label="Share article"
+                      title="Share article"
+                      className="p-3 rounded-2xl bg-white/90 backdrop-blur-md text-gray-900 hover:bg-teal-600 hover:text-white transition-all shadow-lg"
+                    >
+                      <Share2 size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleBookmark(post.id)}
+                      aria-label={bookmarkedIds.includes(post.id) ? "Remove bookmark" : "Bookmark article"}
+                      title={bookmarkedIds.includes(post.id) ? "Remove bookmark" : "Bookmark article"}
+                      className={`p-3 rounded-2xl bg-white/90 backdrop-blur-md transition-all shadow-lg ${bookmarkedIds.includes(post.id) ? "bg-teal-600 text-white" : "text-gray-900 hover:bg-teal-600 hover:text-white"}`}
+                    >
+                      <Bookmark size={18} fill={bookmarkedIds.includes(post.id) ? "currentColor" : "none"} />
+                    </button>
                   </div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-teal-600 font-black text-xs uppercase tracking-widest">{post.category}</span>
-                    <span className="w-1 h-1 rounded-full bg-gray-300" />
-                    <span className="text-gray-500 font-bold text-xs">{post.readTime}</span>
-                  </div>
+                </div>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-teal-600 font-black text-xs uppercase tracking-widest">{post.category}</span>
+                  <span className="w-1 h-1 rounded-full bg-gray-300" />
+                  <span className="text-gray-500 font-bold text-xs">{post.readTime}</span>
+                </div>
+                <Link href={`/journal/${post.id}`}>
                   <h3 className="text-2xl font-black mb-4 leading-tight group-hover:text-teal-600 transition-colors">
                     {post.title}
                   </h3>
-                  <p className="text-gray-600 line-clamp-3 mb-6 font-medium leading-relaxed">
-                    {post.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-[10px] text-teal-600">
-                        TA
-                      </div>
-                      <span className="text-xs font-bold text-gray-500">{post.date}</span>
-                    </div>
-                    <ArrowRight size={18} className="text-gray-300 group-hover:text-black transition-colors group-hover:translate-x-1" />
-                  </div>
                 </Link>
+                <p className="text-gray-600 line-clamp-3 mb-6 font-medium leading-relaxed">
+                  {post.excerpt}
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center font-black text-[10px] text-teal-600">
+                      TA
+                    </div>
+                    <span className="text-xs font-bold text-gray-500">{post.date}</span>
+                  </div>
+                  <Link href={`/journal/${post.id}`}>
+                    <ArrowRight size={18} className="text-gray-300 group-hover:text-black transition-colors group-hover:translate-x-1" />
+                  </Link>
+                </div>
               </motion.article>
             ))}
           </div>
@@ -388,7 +477,7 @@ export default function JournalPage() {
             {[
               { title: "Navigation", links: ["Home", "Services", "Programs", "Calculator"] },
               { title: "Journal", links: ["Investing", "Wealth Building", "Personal Finance", "Fixed Income"] },
-              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 800 000 0000"] },
+              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 806 615 1793"] },
             ].map((col, i) => (
               <div key={i}>
                 <h4 className="font-black uppercase tracking-widest text-xs mb-8 text-teal-400">{col.title}</h4>

@@ -102,12 +102,19 @@ export default function AboutPage() {
             <NavLink href="/#calculator">Calculator</NavLink>
             <NavLink href="/journal">Journal</NavLink>
             <NavLink href="/about">About</NavLink>
-            <Link href="/contact" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
-              Get Started
+            <NavLink href="/contact">Contact</NavLink>
+            <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
+              Book Session
             </Link>
           </div>
 
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="md:hidden p-2">
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-black focus:outline-none"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            title={isMenuOpen ? "Close menu" : "Open menu"}
+          >
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -129,7 +136,8 @@ export default function AboutPage() {
               <Link href="/#calculator" onClick={() => setIsMenuOpen(false)}>Calculator</Link>
               <Link href="/journal" onClick={() => setIsMenuOpen(false)}>Journal</Link>
               <Link href="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
-              <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Contact</Link>
+              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Book Session</Link>
             </div>
           </motion.div>
         )}
@@ -180,7 +188,7 @@ export default function AboutPage() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="absolute -bottom-10 -left-10 bg-black text-white rounded-3xl shadow-2xl p-8 max-w-sm border border-white/10"
+                className="absolute bottom-8 left-8 bg-black text-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-[280px] xs:max-w-sm border border-white/10"
               >
                 <p className="font-bold text-lg leading-tight mb-4">
                   “Financial freedom is not a privilege. It is a right every African deserves.”
@@ -311,7 +319,7 @@ export default function AboutPage() {
             {[
               { title: "Navigation", links: ["Home", "Services", "Programs", "Calculator", "Journal"] },
               { title: "Support", links: ["About Us", "Contact", "FAQs", "Privacy Policy"] },
-              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 800 000 0000"] },
+              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 806 615 1793"] },
             ].map((col, i) => (
               <div key={i}>
                 <h4 className="font-black uppercase tracking-widest text-xs mb-8 text-teal-400">{col.title}</h4>

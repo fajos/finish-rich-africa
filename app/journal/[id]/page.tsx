@@ -4,9 +4,9 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   ArrowLeft, Calendar, Clock, Share2, Bookmark,
-  MessageSquare, Globe, Link2, Mail
+  MessageSquare, Globe, Link2, Mail, Menu, X, ArrowRight
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 // Mock data (in a real app, this would come from a CMS or API)
@@ -168,6 +168,13 @@ const journalPosts = [
   }
 ];
 
+const NavLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <Link href={href} className="relative group text-sm font-medium text-gray-600 hover:text-black transition-colors">
+    {children}
+    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-teal-600 transition-all group-hover:w-full" />
+  </Link>
+);
+
 const BackgroundBlobs = () => (
   <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
     <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-teal-50/50 blur-[120px]" />
@@ -177,7 +184,9 @@ const BackgroundBlobs = () => (
 
 export default function ArticlePage() {
   const params = useParams();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   const post = journalPosts.find(p => p.id === Number(params.id)) || journalPosts[0];
 
@@ -187,27 +196,94 @@ export default function ArticlePage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: post.title,
+        text: post.excerpt,
+        url: window.location.href,
+      }).catch(() => {
+        // Fallback to clipboard if share is cancelled or fails
+        copyToClipboard();
+      });
+    } else {
+      copyToClipboard();
+    }
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    alert("Article link copied to clipboard!");
+  };
+
+  const handleEmailShare = () => {
+    const subject = encodeURIComponent(post.title);
+    const body = encodeURIComponent(`Check out this article: ${post.title}\n\n${window.location.href}`);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-900 selection:bg-teal-100">
       <BackgroundBlobs />
 
-      {/* Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-xl border-b border-gray-100 py-3" : "bg-transparent py-6"}`}>
+      {/* --- Navbar --- */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/80 backdrop-blur-xl border-b border-gray-100 py-3 shadow-sm" : "bg-transparent py-6"}`}>
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          <Link href="/journal" className="flex items-center gap-2 text-sm font-bold hover:text-teal-600 transition-colors">
-            <ArrowLeft size={16} />
-            Back to Journal
+          <Link href="/" className="flex items-center gap-3">
+            <img src="/logo.png" alt="Finish Rich Africa" className="h-12 w-auto" />
+            <div className="flex flex-col">
+              <span className="font-black text-xl leading-none tracking-tight">FINISH RICH</span>
+              <span className="text-[10px] font-bold text-teal-600 tracking-[0.2em]">AFRICA</span>
+            </div>
           </Link>
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
-            <span className="font-black text-sm tracking-tighter">FINISH RICH</span>
-          </Link>
-          <div className="flex gap-4">
-             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Share2 size={18} /></button>
-             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors"><Bookmark size={18} /></button>
+
+          <div className="hidden md:flex items-center gap-8">
+            <NavLink href="/">Home</NavLink>
+            <NavLink href="/#services">Services</NavLink>
+            <NavLink href="/#programs">Programs</NavLink>
+            <NavLink href="/#calculator">Calculator</NavLink>
+            <NavLink href="/journal">Journal</NavLink>
+            <NavLink href="/about">About</NavLink>
+            <NavLink href="/contact">Contact</NavLink>
+            <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
+              Book Session
+            </Link>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 text-gray-600 hover:text-black focus:outline-none"
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            title={isMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {isMenuOpen ? <X /> : <Menu />}
+          </button>
         </div>
       </nav>
+
+      {/* --- Mobile Menu --- */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden"
+          >
+            <div className="flex flex-col gap-6 text-2xl font-black">
+              <Link href="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
+              <Link href="/#services" onClick={() => setIsMenuOpen(false)}>Services</Link>
+              <Link href="/#programs" onClick={() => setIsMenuOpen(false)}>Programs</Link>
+              <Link href="/#calculator" onClick={() => setIsMenuOpen(false)}>Calculator</Link>
+              <Link href="/journal" onClick={() => setIsMenuOpen(false)}>Journal</Link>
+              <Link href="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
+              <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+              <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Book Session</Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="pt-32 pb-32">
         <article className="max-w-4xl mx-auto px-6">
@@ -233,7 +309,7 @@ export default function ArticlePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="flex items-center justify-center gap-8 text-sm font-bold text-gray-500"
+              className="flex items-center justify-center gap-8 text-sm font-bold text-gray-500 mb-8"
             >
               <div className="flex items-center gap-2">
                 <Calendar size={16} />
@@ -243,6 +319,32 @@ export default function ArticlePage() {
                 <Clock size={16} />
                 {post.readTime}
               </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.25 }}
+              className="flex items-center justify-center gap-4 lg:hidden"
+            >
+              <button
+                type="button"
+                onClick={handleShare}
+                aria-label="Share article"
+                title="Share article"
+                className="p-3 bg-gray-50 hover:bg-teal-50 hover:text-teal-600 rounded-full transition-all"
+              >
+                <Share2 size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsBookmarked(!isBookmarked)}
+                aria-label={isBookmarked ? "Remove bookmark" : "Bookmark article"}
+                title={isBookmarked ? "Remove bookmark" : "Bookmark article"}
+                className={`p-3 bg-gray-50 hover:bg-teal-50 hover:text-teal-600 rounded-full transition-all ${isBookmarked ? "text-teal-600 bg-teal-50" : "text-gray-400"}`}
+              >
+                <Bookmark size={20} fill={isBookmarked ? "currentColor" : "none"} />
+              </button>
             </motion.div>
           </header>
 
@@ -282,17 +384,43 @@ export default function ArticlePage() {
                 <div>
                   <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-6">Share Story</h4>
                   <div className="flex flex-col gap-3">
-                    <button className="flex items-center gap-3 text-xs font-bold hover:text-teal-600 transition-colors">
+                    <button
+                      type="button"
+                      onClick={handleShare}
+                      aria-label="Share on Website"
+                      className="flex items-center gap-3 text-xs font-bold hover:text-teal-600 transition-colors"
+                    >
                       <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center"><Globe size={14} /></div>
-                      Website
+                      Share
                     </button>
-                    <button className="flex items-center gap-3 text-xs font-bold hover:text-teal-600 transition-colors">
+                    <button
+                      type="button"
+                      onClick={copyToClipboard}
+                      aria-label="Copy article link"
+                      className="flex items-center gap-3 text-xs font-bold hover:text-teal-600 transition-colors"
+                    >
                       <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center"><Link2 size={14} /></div>
                       Copy Link
                     </button>
-                    <button className="flex items-center gap-3 text-xs font-bold hover:text-teal-600 transition-colors">
+                    <button
+                      type="button"
+                      onClick={handleEmailShare}
+                      aria-label="Share via Email"
+                      className="flex items-center gap-3 text-xs font-bold hover:text-teal-600 transition-colors"
+                    >
                       <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center"><Mail size={14} /></div>
                       Email
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsBookmarked(!isBookmarked)}
+                      aria-label={isBookmarked ? "Remove bookmark" : "Bookmark article"}
+                      className={`flex items-center gap-3 text-xs font-bold hover:text-teal-600 transition-colors ${isBookmarked ? "text-teal-600" : ""}`}
+                    >
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isBookmarked ? "bg-teal-50" : "bg-gray-50"}`}>
+                        <Bookmark size={14} fill={isBookmarked ? "currentColor" : "none"} />
+                      </div>
+                      {isBookmarked ? "Bookmarked" : "Bookmark"}
                     </button>
                   </div>
                 </div>
@@ -386,7 +514,7 @@ export default function ArticlePage() {
             {[
               { title: "Navigation", links: ["Home", "Services", "Programs", "Calculator", "Journal"] },
               { title: "Support", links: ["About Us", "Contact", "FAQs", "Privacy Policy"] },
-              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 800 000 0000"] },
+              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 806 615 1793"] },
             ].map((col, i) => (
               <div key={i}>
                 <h4 className="font-black uppercase tracking-widest text-xs mb-8 text-teal-400">{col.title}</h4>
