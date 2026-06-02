@@ -462,7 +462,7 @@ export default function ArticlePage() {
                   <span className="text-[8px] font-bold text-teal-400 tracking-[0.2em]">AFRICA</span>
                 </div>
               </Link>
-              <p className="text-gray-400 text-sm leading-relaxed mb-8">
+              <p className="text-gray-300 text-base leading-relaxed mb-8 font-medium">
                 Building a future where every African has the financial literacy and tools to thrive. The poverty cycle ends with you.
               </p>
               <div className="flex gap-4">
@@ -512,16 +512,40 @@ export default function ArticlePage() {
             </div>
 
             {[
-              { title: "Navigation", links: ["Home", "Services", "Programs", "Calculator", "Journal"] },
-              { title: "Support", links: ["About Us", "Contact", "FAQs", "Privacy Policy"] },
-              { title: "Contact", links: ["Lagos, Nigeria", "hello@finishrich.africa", "+234 806 615 1793"] },
+              {
+                title: "Navigation",
+                links: [
+                  { name: "Home", href: "/" },
+                  { name: "Services", href: "/#services" },
+                  { name: "Programs", href: "/#programs" },
+                  { name: "Calculator", href: "/#calculator" },
+                  { name: "Journal", href: "/journal" }
+                ]
+              },
+              {
+                title: "Support",
+                links: [
+                  { name: "About Us", href: "/about" },
+                  { name: "Contact", href: "/contact" },
+                  { name: "FAQs", href: "/contact" },
+                  { name: "Privacy Policy", href: "#" }
+                ]
+              },
+              {
+                title: "Contact",
+                links: [
+                  { name: "Lagos, Nigeria", href: "#" },
+                  { name: "hello@finishrich.africa", href: "mailto:hello@finishrich.africa" },
+                  { name: "+234 806 615 1793", href: "tel:+2348066151793" }
+                ]
+              },
             ].map((col, i) => (
               <div key={i}>
                 <h4 className="font-black uppercase tracking-widest text-xs mb-8 text-teal-400">{col.title}</h4>
                 <ul className="space-y-4">
                   {col.links.map((link, j) => (
                     <li key={j}>
-                      <Link href="#" className="text-gray-400 hover:text-white transition-colors text-sm font-medium">{link}</Link>
+                      <Link href={link.href} className="text-gray-300 hover:text-white transition-colors text-base font-bold">{link.name}</Link>
                     </li>
                   ))}
                 </ul>
