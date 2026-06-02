@@ -191,7 +191,7 @@ export default function AboutPage() {
           </div>
 
           {/* Impact Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-32">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-32">
             {[
               { label: "Africans Trained", value: 20000, suffix: "+" },
               { label: "Assets Managed", value: 4, prefix: "₦", suffix: "B+" },
@@ -204,12 +204,12 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center hover:border-teal-500/30 transition-colors"
+                className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center hover:border-teal-500/30 transition-colors flex flex-col justify-center min-h-[160px]"
               >
-                <div className="text-4xl md:text-5xl font-black text-teal-600 mb-3">
+                <div className="text-3xl xs:text-4xl md:text-5xl font-black text-teal-600 mb-3 break-keep">
                   {stat.prefix}<AnimatedCounter end={stat.value} />{stat.suffix}
                 </div>
-                <p className="text-gray-500 font-black uppercase text-xs tracking-widest">{stat.label}</p>
+                <p className="text-gray-500 font-black uppercase text-[10px] md:text-xs tracking-widest">{stat.label}</p>
               </motion.div>
             ))}
           </div>
@@ -263,8 +263,47 @@ export default function AboutPage() {
                 Building a future where every African has the financial literacy and tools to thrive. The poverty cycle ends with you.
               </p>
               <div className="flex gap-4">
-                {["FB", "IG", "TW", "LN"].map((s) => (
-                  <a key={s} href="#" className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-xs font-black hover:bg-teal-600 hover:border-teal-600 transition-all">{s}</a>
+                {[
+                  {
+                    icon: (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                      </svg>
+                    ),
+                    href: "#"
+                  },
+                  {
+                    icon: (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+                      </svg>
+                    ),
+                    href: "#"
+                  },
+                  {
+                    icon: (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                        <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                      </svg>
+                    ),
+                    href: "#"
+                  },
+                  {
+                    icon: (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                        <rect x="2" y="9" width="4" height="12" />
+                        <circle cx="4" cy="4" r="2" />
+                      </svg>
+                    ),
+                    href: "#"
+                  },
+                ].map((s, idx) => (
+                  <a key={idx} href={s.href} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-teal-600 hover:border-teal-600 transition-all text-white">
+                    {s.icon}
+                  </a>
                 ))}
               </div>
             </div>
