@@ -192,17 +192,19 @@ export default function JournalPage() {
               className="text-6xl md:text-7xl font-black tracking-tighter mb-8"
             >
               Wealth wisdom <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600">for the modern African.</span>
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-600 to-emerald-600">for the modern African.</span>
             </motion.h1>
 
             <div className="max-w-2xl relative mt-12">
+              <label htmlFor="search-journal" className="sr-only">Search articles</label>
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input
+                id="search-journal"
                 type="text"
                 placeholder="Search articles, topics, or insights..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-16 pr-6 py-5 rounded-[2rem] bg-gray-50 border-2 border-gray-100 focus:border-teal-500 focus:outline-none focus:bg-white transition-all font-medium text-lg"
+                className="w-full pl-16 pr-6 py-5 rounded-4xl bg-gray-50 border-2 border-gray-100 focus:border-teal-500 focus:outline-none focus:bg-white transition-all font-medium text-lg"
               />
             </div>
           </div>
@@ -216,7 +218,7 @@ export default function JournalPage() {
               className="mb-24 group"
             >
               <Link href={`/journal/${journalPosts[0].id}`} className="grid lg:grid-cols-2 gap-12 items-center">
-                <div className="relative aspect-[16/10] lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
+                <div className="relative aspect-16/10 lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
                   <img
                     src={journalPosts[0].image}
                     alt={journalPosts[0].title}
@@ -262,13 +264,13 @@ export default function JournalPage() {
                 className="group"
               >
                 <Link href={`/journal/${post.id}`}>
-                  <div className="relative aspect-[4/3] rounded-[2.5rem] overflow-hidden mb-8 shadow-sm">
+                  <div className="relative aspect-4/3 rounded-[2.5rem] overflow-hidden mb-8 shadow-sm">
                     <img
                       src={post.image}
                       alt={post.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-teal-600 font-black text-xs uppercase tracking-widest">{post.category}</span>
@@ -305,7 +307,9 @@ export default function JournalPage() {
                   Get weekly financial insights, market analysis, and wealth-building tips delivered straight to your inbox.
                 </p>
                 <form className="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
+                  <label htmlFor="newsletter-email" className="sr-only">Email Address</label>
                   <input
+                    id="newsletter-email"
                     type="email"
                     placeholder="your@email.com"
                     className="flex-1 px-8 py-5 rounded-2xl bg-white/10 border border-white/10 text-white focus:outline-none focus:border-teal-500 transition-all font-bold"

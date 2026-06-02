@@ -226,8 +226,9 @@ export default function ContactPage() {
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-8">
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <label className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Full Name</label>
+                      <label htmlFor="from_name" className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Full Name</label>
                       <input
+                        id="from_name"
                         type="text"
                         name="from_name"
                         placeholder="John Doe"
@@ -238,8 +239,9 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Email Address</label>
+                      <label htmlFor="from_email" className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Email Address</label>
                       <input
+                        id="from_email"
                         type="email"
                         name="from_email"
                         placeholder="john@example.com"
@@ -253,8 +255,9 @@ export default function ContactPage() {
 
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-3">
-                      <label className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Phone Number</label>
+                      <label htmlFor="phone" className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Phone Number</label>
                       <input
+                        id="phone"
                         type="tel"
                         name="phone"
                         placeholder="+234"
@@ -264,8 +267,9 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-3">
-                      <label className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Interested In</label>
+                      <label htmlFor="service_interest" className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Interested In</label>
                       <select
+                        id="service_interest"
                         name="service_interest"
                         value={formData.service_interest}
                         onChange={handleChange}
@@ -283,8 +287,9 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-3">
-                    <label className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Message</label>
+                    <label htmlFor="message" className="text-sm font-black uppercase tracking-widest text-gray-500 ml-1">Message</label>
                     <textarea
+                      id="message"
                       name="message"
                       value={formData.message}
                       onChange={handleChange} 

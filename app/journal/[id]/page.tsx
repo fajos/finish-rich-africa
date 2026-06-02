@@ -308,7 +308,9 @@ export default function ArticlePage() {
           <h2 className="text-3xl md:text-4xl font-black mb-6">Never miss an insight.</h2>
           <p className="text-lg text-gray-600 mb-10 font-medium">Join 10,000+ others receiving our weekly wealth wisdom.</p>
           <form className="max-w-md mx-auto flex gap-4">
+            <label htmlFor="article-newsletter-email" className="sr-only">Email address</label>
             <input
+              id="article-newsletter-email"
               type="email"
               placeholder="Email address"
               className="flex-1 px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-teal-500 outline-none font-bold"

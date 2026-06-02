@@ -77,21 +77,29 @@ export default function Home() {
   }, []);
 
   // Investment Calculator State
-  const [principal, setPrincipal] = useState(500000);
-  const [monthlyContribution, setMonthlyContribution] = useState(500000);
-  const [rate, setRate] = useState(12);
-  const [years, setYears] = useState(10);
+  const [principal, setPrincipal] = useState<number | "">(500000);
+  const [monthlyContribution, setMonthlyContribution] = useState<number | "">(500000);
+  const [rate, setRate] = useState<number | "">(12);
+  const [years, setYears] = useState<number | "">(10);
 
-  const monthlyRate = rate / 100 / 12;
-  const totalMonths = years * 12;
-  const fvPrincipal = principal * Math.pow(1 + monthlyRate, totalMonths);
-  const fvContributions = monthlyContribution * 
-    ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate);
+  const p = Number(principal) || 0;
+  const mc = Number(monthlyContribution) || 0;
+  const r = Number(rate) || 0;
+  const y = Number(years) || 0;
+
+  const monthlyRate = r / 100 / 12;
+  const totalMonths = y * 12;
+  const fvPrincipal = p * Math.pow(1 + monthlyRate, totalMonths);
+  const fvContributions = monthlyRate > 0
+    ? mc * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate)
+    : mc * totalMonths;
 
   const futureValue = Math.round(fvPrincipal + fvContributions);
-  const totalContributions = monthlyContribution * totalMonths;
-  const totalInterest = futureValue - principal - totalContributions;
-  const growthMultiple = (futureValue / (principal + totalContributions)).toFixed(1);
+  const totalContributions = mc * totalMonths;
+  const totalInterest = futureValue - p - totalContributions;
+  const growthMultiple = (p + totalContributions) > 0
+    ? (futureValue / (p + totalContributions)).toFixed(1)
+    : "0.0";
 
   const services = [
     {
@@ -455,7 +463,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-linear-to-b from-teal-600 to-emerald-700 p-10 rounded-[2.5rem] flex flex-col relative scale-105 shadow-2xl shadow-teal-600/20 z-10"
+              className="bg-linear-to-b from-teal-600 to-emerald-700 p-10 rounded-[2.5rem] flex flex-col relative lg:scale-105 shadow-2xl shadow-teal-600/20 z-10"
             >
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-black px-6 py-1 rounded-full text-xs font-black uppercase tracking-widest">
                 Most Popular
@@ -486,7 +494,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="group relative p-10 rounded-[2.5rem] flex flex-col scale-105 z-10"
+              className="group relative p-10 rounded-[2.5rem] flex flex-col lg:scale-105 z-10"
             >
               {/* Animated Gradient Border Overlay - Moved inside a wrapper to handle overflow for background effects only */}
               <div className="absolute inset-0 rounded-[2.5rem] overflow-hidden">
@@ -569,40 +577,48 @@ export default function Home() {
               <div className="space-y-10">
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <label className="font-bold text-gray-700">Initial Investment (₦)</label>
-                    <span className="text-teal-600 font-black">₦{principal.toLocaleString()}</span>
+                    <label htmlFor="principal-range" className="font-bold text-gray-700">Initial Investment (₦)</label>
+                    <span className="text-teal-600 font-black">₦{p.toLocaleString()}</span>
                   </div>
                   <input
+                    id="principal-range"
+                    title="Initial Investment Amount"
                     type="range" min="0" max="10000000" step="100000"
-                    value={principal} onChange={(e) => setPrincipal(Number(e.target.value))}
+                    value={p} onChange={(e) => setPrincipal(Number(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
                   />
                 </div>
 
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <label className="font-bold text-gray-700">Monthly Top-up (₦)</label>
-                    <span className="text-teal-600 font-black">₦{monthlyContribution.toLocaleString()}</span>
+                    <label htmlFor="monthly-range" className="font-bold text-gray-700">Monthly Top-up (₦)</label>
+                    <span className="text-teal-600 font-black">₦{mc.toLocaleString()}</span>
                   </div>
                   <input
+                    id="monthly-range"
+                    title="Monthly Contribution Amount"
                     type="range" min="0" max="2000000" step="50000"
-                    value={monthlyContribution} onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+                    value={mc} onChange={(e) => setMonthlyContribution(Number(e.target.value))}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-8">
                   <div className="space-y-4">
-                    <label className="font-bold text-gray-700 block text-sm">Interest Rate (%)</label>
+                    <label htmlFor="interest-rate" className="font-bold text-gray-700 block text-sm">Interest Rate (%)</label>
                     <input
-                      type="number" value={rate} onChange={(e) => setRate(Number(e.target.value))}
+                      id="interest-rate"
+                      type="number" placeholder="12"
+                      value={rate} onChange={(e) => setRate(e.target.value === "" ? "" : Number(e.target.value))}
                       className="w-full p-4 rounded-xl border-2 border-gray-100 focus:border-teal-500 focus:outline-none font-bold"
                     />
                   </div>
                   <div className="space-y-4">
-                    <label className="font-bold text-gray-700 block text-sm">Time (Years)</label>
+                    <label htmlFor="investment-years" className="font-bold text-gray-700 block text-sm">Time (Years)</label>
                     <input
-                      type="number" value={years} onChange={(e) => setYears(Number(e.target.value))}
+                      id="investment-years"
+                      type="number" placeholder="10"
+                      value={years} onChange={(e) => setYears(e.target.value === "" ? "" : Number(e.target.value))}
                       className="w-full p-4 rounded-xl border-2 border-gray-100 focus:border-teal-500 focus:outline-none font-bold"
                     />
                   </div>
@@ -632,7 +648,7 @@ export default function Home() {
                       <div className="w-3 h-3 rounded-full bg-gray-600" />
                       <span className="text-gray-400 font-bold">Total Invested</span>
                     </div>
-                    <span className="font-black">₦{(principal + totalContributions).toLocaleString()}</span>
+                    <span className="font-black">₦{(p + totalContributions).toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-3">
@@ -762,17 +778,17 @@ export default function Home() {
       </footer>
 
       {/* Floating Action Buttons */}
-      <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-50">
+      <div className="fixed bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-3 md:gap-4 z-50">
         <motion.a
           href="https://wa.me/2348066151793"
           target="_blank"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           whileHover={{ scale: 1.1 }}
-          className="w-14 h-14 bg-green-500 text-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-green-600 transition-all active:scale-95 group"
+          className="w-12 h-12 md:w-14 md:h-14 bg-green-500 text-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl hover:bg-green-600 transition-all active:scale-95 group"
         >
-          <MessageCircle size={24} fill="white" />
-          <span className="absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <MessageCircle size={20} className="md:w-6 md:h-6" fill="white" />
+          <span className="hidden md:block absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             Chat on WhatsApp
           </span>
         </motion.a>
@@ -783,10 +799,10 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
           whileHover={{ scale: 1.1 }}
-          className="w-14 h-14 bg-teal-600 text-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-teal-500 transition-all active:scale-95 group"
+          className="w-12 h-12 md:w-14 md:h-14 bg-teal-600 text-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl hover:bg-teal-500 transition-all active:scale-95 group"
         >
-          <Calculator size={24} />
-          <span className="absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <Calculator size={20} className="md:w-6 md:h-6" />
+          <span className="hidden md:block absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             Investment Calculator
           </span>
         </motion.button>
@@ -796,10 +812,10 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="w-14 h-14 bg-black text-white rounded-2xl flex items-center justify-center shadow-2xl hover:bg-gray-800 transition-all active:scale-95 group"
+          className="w-12 h-12 md:w-14 md:h-14 bg-black text-white rounded-xl md:rounded-2xl flex items-center justify-center shadow-2xl hover:bg-gray-800 transition-all active:scale-95 group"
         >
-          <ArrowRight size={24} className="-rotate-90" />
-          <span className="absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          <ArrowRight size={20} className="md:w-6 md:h-6 -rotate-90" />
+          <span className="hidden md:block absolute right-full mr-4 px-3 py-1 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
             Back to Top
           </span>
         </motion.button>
