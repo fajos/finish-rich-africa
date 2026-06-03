@@ -214,8 +214,26 @@ export default function PostPage() {
 
   if (!post) return null;
 
+  // JSON-LD Structured Data for SEO
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": post.title,
+    "image": post.mainImage ? urlForImage(post.mainImage)?.url() : "https://www.finishrichafrica.com/og-image.jpg",
+    "datePublished": post.publishedAt,
+    "author": {
+      "@type": "Person",
+      "name": post.author || "Dr. Temilola Adeyemi"
+    },
+    "description": post.excerpt,
+  };
+
   return (
     <div className="min-h-screen bg-white text-gray-900 selection:bg-teal-100 selection:text-teal-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <BackgroundBlobs />
 
       {/* --- Navbar --- */}
