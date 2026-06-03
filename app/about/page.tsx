@@ -156,7 +156,7 @@ export default function AboutPage() {
               </div>
               <h1 className="text-6xl md:text-7xl font-black tracking-tighter mb-8">
                 Meet Dr. Temilola <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-600">Adeyemi.</span>
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-teal-600 to-emerald-600">Adeyemi.</span>
               </h1>
               <p className="text-xl text-teal-600 font-bold mb-8 uppercase tracking-wider">ACS, MScFE, PhD • Chartered Stockbroker</p>
 
@@ -175,7 +175,7 @@ export default function AboutPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="relative"
             >
-              <div className="aspect-[4/5] bg-gray-100 rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white">
+              <div className="aspect-4/5 bg-gray-100 rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white">
                 <img
                   src="/temmy.jpg"
                   alt="Dr. Temilola Adeyemi"
@@ -188,7 +188,7 @@ export default function AboutPage() {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="absolute bottom-8 left-8 bg-black text-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-[280px] xs:max-w-sm border border-white/10"
+                className="absolute bottom-8 left-8 bg-black text-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-70 xs:max-w-sm border border-white/10"
               >
                 <p className="font-bold text-lg leading-tight mb-4">
                   “Financial freedom is not a privilege. It is a right every African deserves.”
@@ -212,7 +212,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center hover:border-teal-500/30 transition-colors flex flex-col justify-center min-h-[160px]"
+                className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-sm border border-gray-100 text-center hover:border-teal-500/30 transition-colors flex flex-col justify-center min-h-40"
               >
                 <div className="text-3xl xs:text-4xl md:text-5xl font-black text-teal-600 mb-3 break-keep">
                   {stat.prefix}<AnimatedCounter end={stat.value} />{stat.suffix}

@@ -268,7 +268,7 @@ export default function JournalPage() {
                   className="mb-32 group"
                 >
                   <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
-                    <Link href={`/journal/${posts[0].slug}`} className="lg:w-1/2 relative aspect-[16/10] lg:aspect-auto rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-2xl bg-gray-50 lg:sticky lg:top-44 h-fit">
+                    <Link href={`/journal/${posts[0].slug}`} className="lg:w-1/2 relative aspect-16/10 lg:aspect-auto rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-2xl bg-gray-50 lg:sticky lg:top-44 h-fit">
                       <img
                         src={posts[0].mainImage ? urlForImage(posts[0].mainImage)?.url() : "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2070&auto=format&fit=crop"}
                         alt={posts[0].title}

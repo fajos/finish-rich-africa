@@ -291,7 +291,7 @@ export default function PostPage() {
               </div>
 
               {/* Desktop Author Bio */}
-              <div className="mt-8 hidden lg:flex items-center gap-4 p-6 rounded-[2rem] bg-gray-50/50 border border-gray-100 backdrop-blur-sm">
+              <div className="mt-8 hidden lg:flex items-center gap-4 p-6 rounded-4xl bg-gray-50/50 border border-gray-100 backdrop-blur-sm">
                 <div className="w-12 h-12 rounded-full bg-teal-600 flex items-center justify-center text-white font-black">
                   {post.author?.charAt(0)}
                 </div>
@@ -309,7 +309,7 @@ export default function PostPage() {
                 <div className="mb-12">
                   <Link
                     href="/journal"
-                    className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-teal-600 mb-8 hover:translate-x-[-4px] transition-transform"
+                    className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-teal-600 mb-8 hover:-translate-x-1 transition-transform"
                   >
                     <ArrowLeft size={16} />
                     Back to Blog
