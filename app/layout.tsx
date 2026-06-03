@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   keywords: ["Financial Literacy Africa", "Investing in Nigeria", "Wealth Building", "Dr. Temilola Adeyemi", "Finish Rich Africa", "Stock Market Training"],
   openGraph: {
     title: "Finish Rich Africa | Premium Wealth Coaching",
-    description: "The poverty cycle ends with you. Explore our 6-tier wealth programs and the Web Journal.",
+    description: "The poverty cycle ends with you. Explore our 6-tier wealth programs and the Blog.",
     url: "https://finishrich.africa",
     siteName: "Finish Rich Africa",
     images: [

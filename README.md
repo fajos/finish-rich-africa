@@ -11,7 +11,7 @@ Finish Rich Africa is a modern, fintech-inspired platform dedicated to wealth ed
 ### 🏦 Financial Ecosystem
 - **Interactive Investment Calculator**: Real-time compound interest visualization to project future wealth based on principal, monthly contributions, and market rates.
 - **Membership Tiers**: Comprehensive service levels ranging from Corporate Training and Monthly Stock Classes to bespoke **Platinum Elite** and **VIP Wealth Management** for High Net Worth Individuals.
-- **Dynamic Web Journal**: A content-hub powered by **Sanity.io**, featuring dynamic slug-based routing, search functionality, and deep-dive articles with rich-text rendering.
+- **Dynamic Blog**: A content-hub powered by **Sanity.io**, featuring dynamic slug-based routing, search functionality, local article bookmarking (`localStorage`), and rich-text rendering.
 
 ### 🎨 Design & Experience
 - **Modern Fintech Aesthetic**: High-contrast UI built with Tailwind CSS 4, featuring a sophisticated Teal/Emerald/Black palette and the Inter font family.
@@ -46,7 +46,7 @@ Finish Rich Africa is a modern, fintech-inspired platform dedicated to wealth ed
 ├── app/
 │   ├── about/            # About page
 │   ├── contact/          # Contact & Inquiry form
-│   ├── journal/          # Web Journal main grid & search
+│   ├── journal/          # Blog main grid & search
 │   │   └── [slug]/       # Dynamic articles (Sanity Integration)
 │   ├── studio/           # Embedded Sanity Studio
 │   ├── layout.tsx        # Global layout & SEO
@@ -83,7 +83,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - [x] **Phase 1**: UI Redesign with modern fintech aesthetic.
 - [x] **Phase 2**: Implementation of the Interactive Investment Calculator.
-- [x] **Phase 3**: Development of the Web Journal with dynamic article routing.
+- [x] **Phase 3**: Development of the Blog with dynamic article routing.
 - [x] **Phase 4**: Premium "Platinum Elite" subscription visualization.
 - [x] **Phase 5**: Integration of a Headless CMS (Sanity) for journal management.
 - [ ] **Phase 6**: Final performance audit & mobile responsiveness fine-tuning.

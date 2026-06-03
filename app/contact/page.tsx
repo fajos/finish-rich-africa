@@ -113,7 +113,7 @@ export default function ContactPage() {
             <NavLink href="/#services">Services</NavLink>
             <NavLink href="/#programs">Programs</NavLink>
             <NavLink href="/#calculator">Calculator</NavLink>
-            <NavLink href="/journal">Journal</NavLink>
+            <NavLink href="/journal">Blog</NavLink>
             <NavLink href="/about">About</NavLink>
             <NavLink href="/contact">Contact</NavLink>
             <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" className="bg-black text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-teal-600 transition-all hover:shadow-lg hover:shadow-teal-600/20">
@@ -147,7 +147,7 @@ export default function ContactPage() {
               <Link href="/#services" onClick={() => setIsMenuOpen(false)}>Services</Link>
               <Link href="/#programs" onClick={() => setIsMenuOpen(false)}>Programs</Link>
               <Link href="/#calculator" onClick={() => setIsMenuOpen(false)}>Calculator</Link>
-              <Link href="/journal" onClick={() => setIsMenuOpen(false)}>Journal</Link>
+              <Link href="/journal" onClick={() => setIsMenuOpen(false)}>Blog</Link>
               <Link href="/about" onClick={() => setIsMenuOpen(false)}>About</Link>
               <Link href="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
               <Link href="https://calendly.com/dr-temilola-adeyemi/15min" target="_blank" onClick={() => setIsMenuOpen(false)} className="text-teal-600">Book Session</Link>
@@ -422,7 +422,7 @@ export default function ContactPage() {
                   { name: "Services", href: "/#services" },
                   { name: "Programs", href: "/#programs" },
                   { name: "Calculator", href: "/#calculator" },
-                  { name: "Journal", href: "/journal" }
+                  { name: "Blog", href: "/journal" }
                 ]
               },
               {

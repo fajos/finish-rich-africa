@@ -118,8 +118,53 @@ export default function PostPage() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
   const [post, setPost] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check if bookmarked on load
+    if (post) {
+      const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+      setIsBookmarked(bookmarks.includes(post._id));
+    }
+  }, [post]);
+
+  const handleShare = async (platform: string) => {
+    const url = window.location.href;
+    const title = post.title;
+
+    if (platform === "native" && navigator.share) {
+      try {
+        await navigator.share({ title, url });
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          console.error(err);
+        }
+      }
+    } else if (platform === "link") {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("Link copied to clipboard!");
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+      }
+    } else if (platform === "mail") {
+      window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`;
+    }
+  };
+
+  const toggleBookmark = () => {
+    const bookmarks = JSON.parse(localStorage.getItem("bookmarks") || "[]");
+    let newBookmarks;
+    if (isBookmarked) {
+      newBookmarks = bookmarks.filter((id: string) => id !== post._id);
+    } else {
+      newBookmarks = [...bookmarks, post._id];
+    }
+    localStorage.setItem("bookmarks", JSON.stringify(newBookmarks));
+    setIsBookmarked(!isBookmarked);
+  };
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -233,85 +278,120 @@ export default function PostPage() {
       </AnimatePresence>
 
       <main className="pt-44 pb-32 px-6">
-        <article className="max-w-4xl mx-auto">
-          {/* Article Header */}
-          <div className="mb-16">
-            <Link
-              href="/journal"
-              className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-teal-600 mb-8 hover:translate-x-[-4px] transition-transform"
-            >
-              <ArrowLeft size={16} />
-              Back to Journal
-            </Link>
-            <div className="flex items-center gap-3 mb-6">
-              {post.categories?.map((cat: string) => (
-                <span key={cat} className="px-4 py-1.5 text-xs font-black uppercase tracking-widest bg-teal-50 text-teal-600 rounded-full">
-                  {cat}
-                </span>
-              ))}
-            </div>
-            <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-8 leading-[0.95]">
-              {post.title}
-            </h1>
-            <p className="text-2xl text-gray-500 font-medium mb-10 leading-relaxed italic">
-              {post.excerpt}
-            </p>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+            {/* Left Column: Image (Sticky on Desktop) */}
+            <div className="lg:w-1/2 lg:sticky lg:top-44 h-fit">
+              <div className="rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-2xl bg-gray-50">
+                <img
+                  src={post.mainImage ? urlForImage(post.mainImage)?.url() : "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2070&auto=format&fit=crop"}
+                  alt={post.title}
+                  className="w-full h-auto block"
+                />
+              </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-8 py-8 border-y border-gray-100">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-teal-600 flex items-center justify-center text-white font-black text-xl">
+              {/* Desktop Author Bio */}
+              <div className="mt-8 hidden lg:flex items-center gap-4 p-6 rounded-[2rem] bg-gray-50/50 border border-gray-100 backdrop-blur-sm">
+                <div className="w-12 h-12 rounded-full bg-teal-600 flex items-center justify-center text-white font-black">
                   {post.author?.charAt(0)}
                 </div>
                 <div>
-                  <div className="font-black text-lg">{post.author}</div>
-                  <div className="text-gray-500 text-sm font-bold uppercase tracking-widest">Wealth Consultant</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-8">
-                <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-widest text-xs">
-                  <Calendar size={14} className="text-teal-600" />
-                  {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                </div>
-                <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-widest text-xs">
-                  <Clock size={14} className="text-teal-600" />
-                  8 min read
+                  <div className="font-black text-sm">{post.author}</div>
+                  <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Author & Wealth Consultant</div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Featured Image */}
-          <div className="aspect-16/9 rounded-[3rem] overflow-hidden mb-16 shadow-2xl">
-            <img
-              src={post.mainImage ? urlForImage(post.mainImage)?.url() : "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2070&auto=format&fit=crop"}
-              alt={post.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+            {/* Right Column: Article Content */}
+            <div className="lg:w-1/2">
+              <article>
+                {/* Article Header */}
+                <div className="mb-12">
+                  <Link
+                    href="/journal"
+                    className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-teal-600 mb-8 hover:translate-x-[-4px] transition-transform"
+                  >
+                    <ArrowLeft size={16} />
+                    Back to Blog
+                  </Link>
 
-          {/* Content */}
-          <div className="prose prose-xl prose-teal max-w-none">
-            <PortableText value={post.body} components={components} />
-          </div>
+                  <div className="flex items-center gap-3 mb-6">
+                    {post.categories?.map((cat: string) => (
+                      <span key={cat} className="px-4 py-1.5 text-xs font-black uppercase tracking-widest bg-teal-50 text-teal-600 rounded-full">
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
 
-          {/* Article Footer */}
-          <div className="mt-24 pt-12 border-t border-gray-100 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="text-sm font-black uppercase tracking-widest">Share this insight:</span>
-              <div className="flex gap-2">
-                {[Share2, Link2, Mail].map((Icon, i) => (
-                  <button key={i} className="p-3 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all">
-                    <Icon size={20} />
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter mb-8 leading-[0.95]">
+                    {post.title}
+                  </h1>
+
+                  <p className="text-xl md:text-2xl text-gray-500 font-medium mb-10 leading-relaxed italic">
+                    {post.excerpt}
+                  </p>
+
+                  <div className="flex flex-wrap items-center gap-8 py-8 border-y border-gray-100">
+                    <div className="flex items-center gap-8">
+                      <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-widest text-xs">
+                        <Calendar size={14} className="text-teal-600" />
+                        {new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </div>
+                      <div className="flex items-center gap-2 text-gray-500 font-bold uppercase tracking-widest text-xs">
+                        <Clock size={14} className="text-teal-600" />
+                        8 min read
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="prose prose-lg md:prose-xl prose-teal max-w-none">
+                  <PortableText value={post.body} components={components} />
+                </div>
+
+                {/* Article Footer */}
+                <div className="mt-24 pt-12 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-8">
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-black uppercase tracking-widest">Share this insight:</span>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleShare("native")}
+                        className="p-3 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                        title="Share"
+                      >
+                        <Share2 size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleShare("link")}
+                        className="p-3 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                        title="Copy Link"
+                      >
+                        <Link2 size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleShare("mail")}
+                        className="p-3 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                        title="Email"
+                      >
+                        <Mail size={18} />
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    onClick={toggleBookmark}
+                    className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold transition-all w-full sm:w-auto justify-center ${
+                      isBookmarked ? "bg-teal-600 text-white" : "bg-black text-white hover:bg-teal-600"
+                    }`}
+                  >
+                    <Bookmark size={18} fill={isBookmarked ? "currentColor" : "none"} />
+                    {isBookmarked ? "Saved" : "Save Article"}
                   </button>
-                ))}
-              </div>
+                </div>
+              </article>
             </div>
-            <button className="flex items-center gap-2 px-6 py-3 rounded-full bg-black text-white font-bold hover:bg-teal-600 transition-all">
-              <Bookmark size={18} />
-              Save Article
-            </button>
           </div>
-        </article>
+        </div>
       </main>
 
       {/* --- CTA Section --- */}
@@ -369,7 +449,7 @@ export default function PostPage() {
               <ul className="space-y-4">
                 <li><Link href="/" className="text-gray-400 hover:text-white transition-all text-base font-bold">Home</Link></li>
                 <li><Link href="/about" className="text-gray-400 hover:text-white transition-all text-base font-bold">About Us</Link></li>
-                <li><Link href="/journal" className="text-gray-400 hover:text-white transition-all text-base font-bold">Web Journal</Link></li>
+                <li><Link href="/journal" className="text-gray-400 hover:text-white transition-all text-base font-bold">Blog</Link></li>
                 <li><Link href="/#services" className="text-gray-400 hover:text-white transition-all text-base font-bold">Services</Link></li>
                 <li><Link href="/#calculator" className="text-gray-400 hover:text-white transition-all text-base font-bold">Wealth Calculator</Link></li>
               </ul>

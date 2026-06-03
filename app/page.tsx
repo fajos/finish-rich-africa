@@ -804,7 +804,7 @@ export default function Home() {
                   { name: "Services", href: "/#services" },
                   { name: "Programs", href: "/#programs" },
                   { name: "Calculator", href: "/#calculator" },
-                  { name: "Journal", href: "/journal" }
+                  { name: "Blog", href: "/journal" }
                 ]
               },
               {

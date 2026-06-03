@@ -92,6 +92,10 @@ export default function JournalPage() {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
 
+    // Load bookmarks
+    const saved = localStorage.getItem("bookmarks");
+    if (saved) setBookmarkedIds(JSON.parse(saved));
+
     const fetchPosts = async () => {
       try {
         // Only attempt fetch if a valid-looking Project ID is configured
@@ -114,18 +118,34 @@ export default function JournalPage() {
   }, []);
 
   const toggleBookmark = (id: string) => {
-    setBookmarkedIds(prev =>
-      prev.includes(id) ? prev.filter(bId => bId !== id) : [...prev, id]
-    );
+    setBookmarkedIds(prev => {
+      const next = prev.includes(id) ? prev.filter(bId => bId !== id) : [...prev, id];
+      localStorage.setItem("bookmarks", JSON.stringify(next));
+      return next;
+    });
   };
 
-  const handleShare = (post: any) => {
-    if (navigator.share) {
-      navigator.share({
-        title: post.title,
-        text: post.excerpt,
-        url: window.location.href + `/${post.slug}`,
-      });
+  const handleShare = async (post: any, platform: string = "native") => {
+    const url = `${window.location.origin}/journal/${post.slug}`;
+    const title = post.title;
+
+    if (platform === "native" && navigator.share) {
+      try {
+        await navigator.share({ title, url });
+      } catch (err) {
+        if ((err as Error).name !== 'AbortError') {
+          console.error(err);
+        }
+      }
+    } else if (platform === "link") {
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("Link copied to clipboard!");
+      } catch (err) {
+        console.error('Failed to copy: ', err);
+      }
+    } else if (platform === "mail") {
+      window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`;
     }
   };
 
@@ -207,7 +227,7 @@ export default function JournalPage() {
               animate={{ opacity: 1, y: 0 }}
               className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest text-teal-600 uppercase bg-teal-50 rounded-full"
             >
-              The Web Journal
+              The Blog
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
@@ -220,10 +240,10 @@ export default function JournalPage() {
             </motion.h1>
 
             <div className="max-w-2xl relative mt-12">
-              <label htmlFor="search-journal" className="sr-only">Search articles</label>
+              <label htmlFor="search-blog" className="sr-only">Search articles</label>
               <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
               <input
-                id="search-journal"
+                id="search-blog"
                 type="text"
                 placeholder="Search articles, topics, or insights..."
                 value={searchQuery}
@@ -245,21 +265,22 @@ export default function JournalPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="mb-24 group relative"
+                  className="mb-32 group"
                 >
-                  <div className="grid lg:grid-cols-2 gap-12 items-center">
-                    <Link href={`/journal/${posts[0].slug}`} className="relative aspect-16/10 lg:aspect-square rounded-[3rem] overflow-hidden shadow-2xl">
+                  <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+                    <Link href={`/journal/${posts[0].slug}`} className="lg:w-1/2 relative aspect-[16/10] lg:aspect-auto rounded-[3rem] md:rounded-[4rem] overflow-hidden shadow-2xl bg-gray-50 lg:sticky lg:top-44 h-fit">
                       <img
                         src={posts[0].mainImage ? urlForImage(posts[0].mainImage)?.url() : "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=2070&auto=format&fit=crop"}
                         alt={posts[0].title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                       <div className="absolute top-8 left-8 bg-white/90 backdrop-blur-md px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">
-                        Featured Article
+                        Featured Insight
                       </div>
                     </Link>
-                    <div>
-                      <div className="flex items-center justify-between mb-6">
+
+                    <div className="lg:w-1/2 flex flex-col justify-center">
+                      <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-4">
                           <span className="text-teal-600 font-black text-sm uppercase tracking-widest">{posts[0].categories?.[0]}</span>
                           <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
@@ -267,38 +288,51 @@ export default function JournalPage() {
                             {new Date(posts[0].publishedAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                           <button
                             type="button"
-                            onClick={() => handleShare(posts[0])}
-                            className="p-2.5 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                            onClick={() => handleShare(posts[0], "native")}
+                            className="p-3 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                            title="Share"
                           >
                             <Share2 size={18} />
                           </button>
                           <button
                             type="button"
+                            onClick={() => handleShare(posts[0], "link")}
+                            className="p-3 rounded-full bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                            title="Copy Link"
+                          >
+                            <ChevronRight size={18} className="rotate-90" />
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => toggleBookmark(posts[0]._id)}
-                            className={`p-2.5 rounded-full bg-gray-50 transition-all ${bookmarkedIds.includes(posts[0]._id) ? "text-teal-600 bg-teal-50" : "text-gray-400 hover:text-teal-600 hover:bg-teal-50"}`}
+                            className={`p-3 rounded-full transition-all ${bookmarkedIds.includes(posts[0]._id) ? "text-teal-600 bg-teal-50" : "bg-gray-50 text-gray-400 hover:text-teal-600 hover:bg-teal-50"}`}
+                            title={bookmarkedIds.includes(posts[0]._id) ? "Remove Bookmark" : "Bookmark Article"}
                           >
                             <Bookmark size={18} fill={bookmarkedIds.includes(posts[0]._id) ? "currentColor" : "none"} />
                           </button>
                         </div>
                       </div>
+
                       <Link href={`/journal/${posts[0].slug}`}>
-                        <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight group-hover:text-teal-600 transition-colors">
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-[0.95] tracking-tighter group-hover:text-teal-600 transition-colors">
                           {posts[0].title}
                         </h2>
                       </Link>
-                      <p className="text-xl text-gray-600 mb-10 leading-relaxed">
+
+                      <p className="text-xl md:text-2xl text-gray-500 font-medium mb-12 leading-relaxed italic">
                         {posts[0].excerpt}
                       </p>
+
                       <Link
                         href={`/journal/${posts[0].slug}`}
-                        className="inline-flex items-center gap-3 text-lg font-black group/btn"
+                        className="inline-flex items-center gap-4 text-xl font-black group/btn"
                       >
-                        Read Full Story
-                        <div className="p-3 rounded-full bg-black text-white group-hover/btn:bg-teal-600 transition-colors">
-                          <ArrowRight size={20} />
+                        Dive into the story
+                        <div className="p-4 rounded-full bg-black text-white group-hover/btn:bg-teal-600 transition-all group-hover/btn:translate-x-2">
+                          <ArrowRight size={24} />
                         </div>
                       </Link>
                     </div>
@@ -401,7 +435,7 @@ export default function JournalPage() {
               <ul className="space-y-4">
                 <li><Link href="/" className="text-gray-400 hover:text-white transition-all text-base font-bold">Home</Link></li>
                 <li><Link href="/about" className="text-gray-400 hover:text-white transition-all text-base font-bold">About Us</Link></li>
-                <li><Link href="/journal" className="text-gray-400 hover:text-white transition-all text-base font-bold">Web Journal</Link></li>
+                <li><Link href="/journal" className="text-gray-400 hover:text-white transition-all text-base font-bold">Blog</Link></li>
                 <li><Link href="/#services" className="text-gray-400 hover:text-white transition-all text-base font-bold">Services</Link></li>
                 <li><Link href="/#calculator" className="text-gray-400 hover:text-white transition-all text-base font-bold">Wealth Calculator</Link></li>
               </ul>
