@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://finishrich.africa"),
   title: "Finish Rich Africa | Poverty Cycle Ends With Me",
   description: "Join Dr. Temilola Adeyemi at Finish Rich Africa. We provide world-class financial literacy, investment coaching, and wealth preservation strategies for the modern African.",
   keywords: ["Financial Literacy Africa", "Investing in Nigeria", "Wealth Building", "Dr. Temilola Adeyemi", "Finish Rich Africa", "Stock Market Training"],
